@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sameer Khan — Cloud Computing &amp; Cosmos</title>
+  <style>
+    :root {
+      --bg-deep: #060913;
+      --bg-surface: #0d1326;
+      --bg-card: #121a33;
+      --bg-card-hover: #172140;
+      --text-primary: #eef2ff;
+      --text-secondary: #b8c2e0;
+      --text-muted: #828fb8;
+      --accent-cyan: #38bdf8;
+      --accent-violet: #a855f7;
+      --accent-amber: #fbbf24;
+      --accent-rose: #fb7185;
+      --border-subtle: rgba(148, 163, 184, 0.16);
+      --glow-cyan: rgba(56, 189, 248, 0.18);
+      --glow-violet: rgba(168, 85, 247, 0.16);
+      --max-width: 1120px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --transition: 0.25s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.72;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 15% 12%, rgba(168, 85, 247, 0.14), transparent 36%),
+        radial-gradient(circle at 85% 18%, rgba(56, 189, 248, 0.14), transparent 40%),
+        radial-gradient(circle at 50% 75%, rgba(56, 189, 248, 0.06), transparent 50%);
+    }
+
+    /* Subtle starfield overlay using pure CSS gradients */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        radial-gradient(1.5px 1.5px at 8% 16%, rgba(255, 255, 255, 0.65), transparent),
+        radial-gradient(1px 1px at 22% 44%, rgba(255, 255, 255, 0.45), transparent),
+        radial-gradient(2px 2px at 37% 19%, rgba(56, 189, 248, 0.7), transparent),
+        radial-gradient(1px 1px at 53% 62%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1.5px 1.5px at 68% 28%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1px 1px at 79% 74%, rgba(168, 85, 247, 0.65), transparent),
+        radial-gradient(1.5px 1.5px at 91% 39%, rgba(255, 255, 255, 0.55), transparent),
+        radial-gradient(1px 1px at 14% 84%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1.5px 1.5px at 46% 89%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 86% 91%, rgba(255, 255, 255, 0.45), transparent);
+      background-size: 420px 420px;
+    }
+
+    a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    a:hover {
+      color: #7dd3fc;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(6, 9, 19, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 68px;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.08rem;
+      letter-spacing: 0.03em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      white-space: nowrap;
+    }
+
+    .brand-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      box-shadow: 0 0 12px var(--accent-cyan);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 1.1rem;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.3rem 0;
+      position: relative;
+    }
+
+    nav a:hover,
+    nav a:focus-visible {
+      color: var(--text-primary);
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
+      transition: width var(--transition);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 5.2rem 0 4rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.38rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      margin-bottom: 1.25rem;
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 4.5vw, 3.45rem);
+      line-height: 1.14;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.1rem;
+    }
+
+    .gradient-text {
+      background: linear-gradient(120deg, var(--accent-cyan) 0%, #818cf8 48%, var(--accent-violet) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-lead {
+      font-size: 1.08rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.8rem;
+      max-width: 62ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.78rem 1.4rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), #6366f1);
+      color: #050814;
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-primary:hover {
+      color: #050814;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .profile-card {
+      background: linear-gradient(160deg, rgba(18, 26, 51, 0.92), rgba(13, 19, 38, 0.96));
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-card::before {
+      content: "";
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--glow-violet), transparent 70%);
+      pointer-events: none;
+    }
+
+    .profile-card h2 {
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .meta-list {
+      list-style: none;
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .meta-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .meta-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.15rem;
+    }
+
+    .meta-value {
+      font-size: 0.96rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Sections */
+    section {
+      padding: 4.2rem 0;
+    }
+
+    .section-header {
+      margin-bottom: 2.2rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-cyan);
+      margin-bottom: 0.45rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.65rem, 3vw, 2.35rem);
+      font-weight: 750;
+      letter-spacing: -0.015em;
+      margin-bottom: 0.65rem;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      max-width: 68ch;
+      font-size: 1.02rem;
+    }
+
+    /* Story / Curiosity Panel */
+    .story-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--accent-cyan);
+      border-radius: var(--radius-lg);
+      padding: 2rem 2.2rem;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+    }
+
+    .story-panel p + p {
+      margin-top: 1.1rem;
+    }
+
+    .story-panel p {
+      color: var(--text-secondary);
+      font-size: 1.02rem;
+    }
+
+    /* Topic Quick Jump Pills */
+    .topic-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-bottom: 2rem;
+    }
+
+    .topic-pill {
+      padding: 0.42rem 0.9rem;
+      border-radius: 999px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 0.86rem;
+      font-weight: 500;
+      transition: all var(--transition);
+    }
+
+    .topic-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    /* Astronomy Topic Cards */
+    .astro-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .astro-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      scroll-margin-top: 86px;
+    }
+
+    .astro-card:hover {
+      transform: translateY(-4px);
+      background: var(--bg-card-hover);
+      border-color: rgba(56, 189, 248, 0.38);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.38);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .card-num {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(168, 85, 247, 0.14);
+      color: #d8b4fe;
+      border: 1px solid rgba(168, 85, 247, 0.28);
+    }
+
+    .card-tag {
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .astro-card h3 {
+      font-size: 1.32rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .astro-card p {
+      color: var(--text-secondary);
+      font-size: 0.96rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .astro-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .key-fact {
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.88rem;
+      color: var(--accent-amber);
+    }
+
+    .key-fact strong {
+      color: var(--text-primary);
+    }
+
+    /* Cloud + Cosmos Bridge Section */
+    .bridge-box {
+      background: linear-gradient(135deg, rgba(18, 26, 51, 0.95), rgba(24, 18, 48, 0.95));
+      border: 1px solid rgba(168, 85, 247, 0.28);
+      border-radius: var(--radius-lg);
+      padding: 2.2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .bridge-box h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    .bridge-box p {
+      color: var(--text-secondary);
+      font-size: 0.97rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .highlight-list {
+      list-style: none;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .highlight-list li {
+      background: rgba(6, 9, 19, 0.55);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      color: var(--text-secondary);
+      font-size: 0.94rem;
+    }
+
+    .highlight-list strong {
+      color: var(--accent-cyan);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      padding: 2.2rem 0;
+      margin-top: 2rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .bridge-box {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 3.4rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.8rem 0;
+      }
+
+      nav ul {
+        justify-content: flex-start;
+        gap: 0.35rem 0.85rem;
+      }
+
+      .story-panel,
+      .bridge-box,
+      .astro-card {
+        padding: 1.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav-inner">
+      <a href="#top" class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span>Sameer Khan</span>
+      </a>
+      <nav aria-label="Primary Navigation">
+        <ul>
+          <li><a href="#about">About Me</a></li>
+          <li><a href="#curiosity">My Curiosity</a></li>
+          <li><a href="#astronomy">Astronomy</a></li>
+          <li><a href="#cloud-cosmos">Cloud &amp; Cosmos</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="badge">Welcome to My Personal Space</span>
+          <h1>Hi, I&rsquo;m <span class="gradient-text">Sameer Khan</span></h1>
+          <p class="hero-lead">
+            Welcome to my website! I am a student pursuing a <strong>Bachelor of Technology in Computer Science with a specialization in Cloud Computing</strong> at <strong>Parul University, Vadodara, Gujarat</strong>. Beyond distributed systems and scalable cloud architectures, my deepest passion is <strong>astronomy</strong>—understanding how the universe began, how stars forge the elements of life, and how extreme cosmic objects bend space, time, and magnetism.
+          </p>
+          <div class="hero-actions">
+            <a href="#astronomy" class="btn btn-primary">Explore My Astronomy Notes</a>
+            <a href="#curiosity" class="btn btn-secondary">How My Curiosity Started</a>
+          </div>
+        </div>
+
+        <aside class="profile-card" aria-label="Quick Profile Summary">
+          <h2>At a Glance</h2>
+          <ul class="meta-list">
+            <li class="meta-item">
+              <span class="meta-label">Name</span>
+              <span class="meta-value">Sameer Khan</span>
+            </li>
+            <li class="meta-item">
+              <span class="meta-label">Degree Program</span>
+              <span class="meta-value">B.Tech in Computer Science (Cloud Computing)</span>
+            </li>
+            <li class="meta-item">
+              <span class="meta-label">University &amp; Location</span>
+              <span class="meta-value">Parul University, Vadodara, Gujarat</span>
+            </li>
+            <li class="meta-item">
+              <span class="meta-label">Core Passion / Hobby</span>
+              <span class="meta-value">Astronomy &amp; Astrophysics</span>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- About & Early Curiosity -->
+    <section id="about">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Introduction</span>
+          <h2>Engineering the Cloud, Looking Toward the Stars</h2>
+          <p>
+            Studying Computer Science with Cloud Computing at Parul University in Vadodara gives me a structured, analytical way to solve problems at massive scale—while astronomy reminds me how vast and awe-inspiring scale truly is.
+          </p>
+        </div>
+
+        <div id="curiosity" class="story-panel">
+          <span class="section-tag" style="margin-bottom: 0.6rem;">Where It All Began</span>
+          <p>
+            From the very beginning, I was fascinated by a simple yet overwhelming question: <strong>how does the universe actually work?</strong> Looking up at the night sky—even when city lights or haze partially hide fainter stars—sparked a curiosity that never really turned off. A single pinpoint of light isn&rsquo;t just a decoration in the sky; it can be a giant thermonuclear furnace millions or billions of light-years away, shining with light that began its journey long before human history.
+          </p>
+          <p>
+            As I grew older, wanting to know <em>why</em> stars shine led me into physics, cosmology, and high-energy astrophysics. I wanted to connect everyday questions—like where the iron in our blood or the carbon in our cells came from—to cosmic processes happening across galaxies. Over time, astronomy went from a childhood wonder to a serious lifelong interest that shapes how I think about space, time, energy, and discovery.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Astronomy Deep Dive -->
+    <section id="astronomy">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Astrophysics &amp; Cosmology</span>
+          <h2>My Understanding of the Universe</h2>
+          <p>
+            Here is how I break down the core phenomena that shape our universe—from its hot, dense beginning to its most extreme remnants and mysterious invisible components.
+          </p>
+        </div>
+
+        <div class="topic-nav" aria-label="Jump to Astronomy Topic">
+          <a href="#big-bang" class="topic-pill">Big Bang Theory</a>
+          <a href="#nuclear-fusion" class="topic-pill">Nuclear Fusion</a>
+          <a href="#stellar-evolution" class="topic-pill">Stellar Evolution</a>
+          <a href="#black-holes" class="topic-pill">Black Holes</a>
+          <a href="#magnetars" class="topic-pill">Magnetars</a>
+          <a href="#pulsars" class="topic-pill">Pulsars</a>
+          <a href="#neutron-stars" class="topic-pill">Neutron Stars</a>
+          <a href="#dark-matter" class="topic-pill">Dark Matter</a>
+          <a href="#dark-energy" class="topic-pill">Dark Energy</a>
+        </div>
+
+        <div class="astro-grid">
+          <!-- 1. Big Bang Theory -->
+          <article id="big-bang" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">01</span>
+                <span class="card-tag">Cosmology</span>
+              </div>
+              <h3>Big Bang Theory</h3>
+              <p>
+                The Big Bang theory describes how our observable universe expanded from an extraordinarily hot, dense, and energetic early state roughly 13.8 billion years ago. Rather than an explosion <em>into</em> pre-existing empty space, it was a rapid expansion of space itself.
+              </p>
+              <p>
+                As the universe cooled, fundamental forces separated, elementary particles formed, and light nuclei like hydrogen, helium, and trace lithium were synthesized in the first few minutes (Big Bang nucleosynthesis). About 380,000 years later, electrons combined with nuclei to form neutral atoms, releasing the Cosmic Microwave Background (CMB)—a faint thermal afterglow we still detect today.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> Expansion of space, primordial light elements, and the CMB together form the strongest observational pillars of modern cosmology.
+            </div>
+          </article>
+
+          <!-- 2. Nuclear Fusion -->
+          <article id="nuclear-fusion" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">02</span>
+                <span class="card-tag">Stellar Physics</span>
+              </div>
+              <h3>Nuclear Fusion</h3>
+              <p>
+                Nuclear fusion is the process by which light atomic nuclei merge into heavier nuclei, releasing immense energy because the resulting nucleus has slightly less mass than the sum of its parts—converting mass into energy according to Einstein&rsquo;s relation <em>E = mc&sup2;</em>.
+              </p>
+              <p>
+                In stars like our Sun, extreme core temperatures (around 15 million Kelvin) and immense gravitational pressure allow positively charged protons to overcome electrostatic repulsion—helped by quantum tunneling—and fuse into helium via the proton-proton chain. In more massive stars, the CNO cycle plays a major role, and later stages fuse helium into carbon, oxygen, and heavier elements.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> Outward thermal and radiation pressure from fusion balances inward gravity, keeping a star stable for millions or billions of years.
+            </div>
+          </article>
+
+          <!-- 3. Stellar Evolution -->
+          <article id="stellar-evolution" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">03</span>
+                <span class="card-tag">Life Cycle of Stars</span>
+              </div>
+              <h3>Stellar Evolution</h3>
+              <p>
+                Stars aren&rsquo;t eternal; they are born inside cold, dense molecular clouds of gas and dust where gravitational instability triggers collapse into protostars. Once core temperatures ignite sustained hydrogen fusion, a star enters its long, steady <strong>main sequence</strong> phase.
+              </p>
+              <p>
+                A star&rsquo;s fate depends primarily on its initial mass. Low- to medium-mass stars like the Sun swell into red giants, shed outer layers into planetary nebulae, and leave behind dense <strong>white dwarfs</strong>. Massive stars burn fuel rapidly, climb through heavier fusion shells up to iron, and end violently in <strong>core-collapse supernovae</strong>—enriching the cosmos with heavy elements.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> Initial mass acts as a star&rsquo;s destiny blueprint, governing its luminosity, lifespan, and final remnant.
+            </div>
+          </article>
+
+          <!-- 4. Black Holes -->
+          <article id="black-holes" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">04</span>
+                <span class="card-tag">General Relativity</span>
+              </div>
+              <h3>Black Holes</h3>
+              <p>
+                A black hole is a region of spacetime where gravity is so intense that nothing—not even light—can escape once it crosses the boundary known as the <strong>event horizon</strong>. Stellar-mass black holes form when the core of a very massive star collapses past the limit where any known outward pressure can halt gravity.
+              </p>
+              <p>
+                Supermassive black holes, millions to billions of times the mass of the Sun, sit at the centers of galaxies and often power luminous active galactic nuclei as infalling gas heats up in swirling accretion disks. Near a black hole, time dilation and gravitational lensing become dramatically pronounced.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> Black holes are laboratories of extreme gravity where general relativity and quantum mechanics meet.
+            </div>
+          </article>
+
+          <!-- 5. Magnetars -->
+          <article id="magnetars" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">05</span>
+                <span class="card-tag">Extreme Magnetism</span>
+              </div>
+              <h3>Magnetars</h3>
+              <p>
+                A magnetar is a type of neutron star endowed with an extraordinarily powerful magnetic field—roughly 100 trillion times stronger than Earth&rsquo;s magnetic field and up to a thousand times stronger than typical neutron stars.
+              </p>
+              <p>
+                Rather than shining mainly through regular rotational pulses like standard pulsars, magnetars are powered largely by the decay and rearrangement of their ultra-strong magnetic fields. Stresses in the rigid neutron-star crust can trigger &ldquo;starquakes,&rdquo; releasing colossal bursts of X-rays and gamma rays.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> Magnetar magnetic fields are so intense they can distort atomic orbitals and suppress normal chemical bonding.
+            </div>
+          </article>
+
+          <!-- 6. Pulsars -->
+          <article id="pulsars" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">06</span>
+                <span class="card-tag">Cosmic Lighthouses</span>
+              </div>
+              <h3>Pulsars</h3>
+              <p>
+                Pulsars are rapidly spinning neutron stars that emit focused beams of electromagnetic radiation—most famously in radio wavelengths, and sometimes in X-rays or gamma rays—from their magnetic poles.
+              </p>
+              <p>
+                Because a pulsar&rsquo;s magnetic axis is often tilted relative to its rotation axis, each rotation sweeps the beam across Earth like a cosmic lighthouse, producing regular pulses with extraordinary timing precision. Millisecond pulsars spin hundreds of times per second and rival atomic clocks in stability.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> Precise pulse timing lets astronomers test gravity in strong fields, probe the interstellar medium, and search for nanohertz gravitational waves.
+            </div>
+          </article>
+
+          <!-- 7. Neutron Stars -->
+          <article id="neutron-stars" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">07</span>
+                <span class="card-tag">Dense Matter</span>
+              </div>
+              <h3>Neutron Stars</h3>
+              <p>
+                When a massive star explodes as a supernova and its surviving core has a mass between roughly 1.4 and ~2 solar masses, gravity crushes protons and electrons together via inverse beta decay into a city-sized ball—about 20 km across—composed predominantly of neutrons.
+              </p>
+              <p>
+                Neutron stars are among the densest objects in the universe: a single sugar-cube-sized volume of neutron-star matter would weigh around a billion tons on Earth. Their interiors feature a solid outer crust, a superfluid neutron interior, and exotic states of matter under extreme pressure.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> Collisions between two neutron stars (kilonovae) forge heavy elements like gold and platinum and produce detectable gravitational waves.
+            </div>
+          </article>
+
+          <!-- 8. Dark Matter -->
+          <article id="dark-matter" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">08</span>
+                <span class="card-tag">Invisible Mass</span>
+              </div>
+              <h3>Dark Matter</h3>
+              <p>
+                Dark matter is a non-luminous, non-baryonic form of matter that does not emit, absorb, or reflect light in a way we can directly see, yet makes up roughly five times as much mass in the universe as ordinary visible matter.
+              </p>
+              <p>
+                We infer its presence through gravitational effects: stars in the outer regions of spiral galaxies orbit faster than visible mass alone can explain, galaxy clusters hold together despite high member velocities, and background light bends around massive halos via gravitational lensing.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> Dark matter acts as a gravitational scaffolding that allowed galaxies and large-scale cosmic structure to form early on.
+            </div>
+          </article>
+
+          <!-- 9. Dark Energy -->
+          <article id="dark-energy" class="astro-card">
+            <div>
+              <div class="card-top">
+                <span class="card-num">09</span>
+                <span class="card-tag">Cosmic Acceleration</span>
+              </div>
+              <h3>Dark Energy</h3>
+              <p>
+                Dark energy is the label given to the unknown energy component or mechanism driving the <strong>accelerated expansion</strong> of the universe—discovered in the late 1990s through observations of distant Type Ia supernovae appearing fainter than expected in a decelerating cosmos.
+              </p>
+              <p>
+                Accounted for as the largest share of the universe&rsquo;s total energy budget today, dark energy behaves like a negative-pressure effect on cosmic scales. Whether it is a constant energy density of space (a cosmological constant) or a dynamic field evolving over time remains one of physics&rsquo; biggest open questions.
+              </p>
+            </div>
+            <div class="key-fact">
+              <strong>Core Insight:</strong> While gravity pulls matter inward to build structures, dark energy pushes cosmic expansion to accelerate over billions of years.
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cloud Computing & Astronomy Connection -->
+    <section id="cloud-cosmos">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Two Worlds, One Mindset</span>
+          <h2>Where Cloud Computing Meets Astrophysics</h2>
+          <p>
+            Studying Cloud Computing at Parul University shapes how I appreciate modern astronomy—because today&rsquo;s telescopes generate massive datasets that require distributed computing to analyze.
+          </p>
+        </div>
+
+        <div class="bridge-box">
+          <div>
+            <h3>Why Cloud Thinking Fits the Cosmos</h3>
+            <p>
+              Modern sky surveys and radio arrays produce terabytes and petabytes of observations. Processing light curves, classifying transient events, and running cosmological simulations rely on elastic compute, distributed storage, and fault-tolerant architectures—the very foundations of cloud computing.
+            </p>
+            <p>
+              At Parul University in Vadodara, building a strong foundation in computer science and cloud technologies gives me practical skills while keeping my curiosity anchored in the biggest questions of physics.
+            </p>
+          </div>
+          <ul class="highlight-list">
+            <li>
+              <strong>Scalable Data Pipelines:</strong> Astronomical surveys stream millions of alerts and images—mirroring real-world distributed ingestion and processing systems.
+            </li>
+            <li>
+              <strong>Simulation &amp; Modeling:</strong> N-body structure formation, stellar interiors, and relativistic ray-tracing demand high compute capacity and smart resource orchestration.
+            </li>
+            <li>
+              <strong>Lifelong Learning:</strong> Both cloud engineering and astrophysics reward clear mental models, rigorous testing, and continuous curiosity as new tools emerge.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <strong>Sameer Khan</strong> &bull; B.Tech CSE (Cloud Computing), Parul University, Vadodara, Gujarat
+      </div>
+      <div>
+        Curious about how the universe works—from the Big Bang to dark energy.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
